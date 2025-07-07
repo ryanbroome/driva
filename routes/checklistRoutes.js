@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
+
 // Define the checklist items
+// MOCK DATABASE, THIS INFO WILL BE REPLACED WITH A REAL DATABASE IN THE FUTURE
+// This is a mock database for the checklist items. In a real application, you would replace
+// this with a database connection and queries to fetch and manipulate the checklist items.
 const checklistItems = [
     {
         id: 1,
@@ -53,6 +57,22 @@ router.post("/", (req, res, next) => {
         };
         checklistItems.push(newItem);
         res.status(201).json({ checklist: newItem });
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+});
+
+// PATCH route to mark a checklist item as completed
+router.patch("/:id/complete", (req, res, next) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        const item = checklistItems.find((item) => item.id === id);
+        if (!item) {
+            return res.status(404).json({ error: "Checklist item not found" });
+        }
+        item.completed = true;
+        res.json({ checklist: item });
     } catch (err) {
         console.error(err);
         next(err);
